@@ -4,3 +4,4 @@ build/
 deps
 *.bin
 *.json
+.cache/
