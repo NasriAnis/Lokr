@@ -21,7 +21,7 @@ int authenticate(char *password_buffer, char* username_buffer) {
       return 1;
     }
   } else {
-    printf("wrong user.");
+    printf("wrong user.\n");
     return 1;
   }
 }
@@ -32,10 +32,11 @@ int create_user(char* username, char* password) {
   hash_password(password, encoded);
  
   // save user
-  F_write("user.bin", "username");
-  F_write("user.bin", username);
-  F_write("user.bin", "password");
-  F_write("user.bin", encoded);
+  F_write("user.bin", "username", 1);
+  F_write("user.bin", username, 1);
+  F_write("user.bin", "password", 1);
+  F_write("user.bin", encoded, 1);
+  new_line("user.bin", 1);
   printf("User created and saved.\n");
   return 0;
 }

@@ -22,10 +22,21 @@ int F_exist(char *file_name) {
   return 0;
 }
 
-int F_write(char *file_name, char *input) {
+int F_write(char *file_name, char *input, int new_line) {
   fptr = F_open(file_name, "a");
   fputs(input, fptr);
-  fputc('\n', fptr);
+  for (int i = 0; new_line > i; i++){
+    fputc('\n', fptr);
+  }
+  fclose(fptr);
+  return 0;
+}
+
+int new_line(char *file_name, int num){
+  fptr = F_open(file_name, "a");
+  for (int i = 0; num > i; i++){
+    fputc('\n', fptr);
+  }
   fclose(fptr);
   return 0;
 }
