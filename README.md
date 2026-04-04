@@ -17,6 +17,3 @@ show [site] or [username] or both
 ```
 
 Other options will be added in future versions...
-
-## Contributing
-Feel free to contribute and make this project better, thanks in advance.
