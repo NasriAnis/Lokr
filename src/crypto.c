@@ -60,7 +60,7 @@ unsigned char* crypto_decrypt(const unsigned char *key, unsigned char* blob){
   const unsigned char* ctext = blob + crypto_secretbox_NONCEBYTES + sizeof(ui32);
 
   size_t ctext_len = crypto_secretbox_MACBYTES + message_len;
-  size_t blob_len  = crypto_secretbox_NONCEBYTES + ctext_len;
+  // size_t blob_len  = crypto_secretbox_NONCEBYTES + ctext_len;
 
   unsigned char* plain_text = malloc(message_len + 1);
   if (!plain_text){ return NULL; }
@@ -75,4 +75,31 @@ unsigned char* crypto_decrypt(const unsigned char *key, unsigned char* blob){
  
   plain_text[message_len] = '\0';
   return plain_text;
+}
+
+char* encode_base64(const char* bin){
+  size_t l_len = sodium_base64_ENCODED_LEN(strlen(bin), sodium_base64_VARIANT_ORIGINAL);
+  char *b64 = malloc(l_len);
+  sodium_bin2base64(b64, l_len, (unsigned char *)bin, strlen(bin), sodium_base64_VARIANT_ORIGINAL);
+
+  return b64;
+}
+
+char* decode_base64(const char* b64){
+  size_t b64_len = strlen(b64);
+  size_t bin_maxlen = 1024;
+  unsigned char* bin = malloc(bin_maxlen);
+  size_t bin_len = 0;
+
+  int ret = sodium_base642bin(
+    bin, bin_maxlen,
+    b64, b64_len,
+    NULL,        // don't ignore any characters
+    &bin_len,
+    NULL,        // don't need pointer to end
+    sodium_base64_VARIANT_ORIGINAL
+  );
+  bin[bin_len] = '\0';
+
+  return (char *)bin;
 }

@@ -7,6 +7,6 @@ typedef struct {
 } user_t;
 
 int authenticate(char* password_buffer, char* username_buffer);
-int create_user(char* username, char* password);
+void create_user(char* username, char* password);
 
 #endif
