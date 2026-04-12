@@ -3,17 +3,12 @@
 #include <ctype.h>
 #include <string.h>
 
-void f_gets(char* input){ // add a nulll terminator at the new line of s string
+void f_gets(char* input){
+  // This function adds a null terminator
+  // at the new line of a string
   fgets(input, sizeof(input), stdin);
   input[strcspn(input, "\n")] = '\0';
 }
-
-// need to pass the size as a parameter in f_gets and str_cpy:
-//
-//      1 void f_gets(char* input, size_t size) {
-//      2   fgets(input, size, stdin);
-//      3   input[strcspn(input, "\n")] = '\0';
-//      4 }
 
 void str_cpy(char* input, char* buffer){
   strncpy(input, buffer, sizeof(input) - 1);
@@ -46,6 +41,8 @@ void trim(char *str) {
     while (end >= 0 && isspace((unsigned char)str[end]))
         str[end--] = '\0';
 }
+
+// debugging purpose function
 void print_hex(const unsigned char* data, size_t len){
   for(size_t i = 0; i < len; i++){
     printf("%02x", data[i]);

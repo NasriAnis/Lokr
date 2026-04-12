@@ -134,7 +134,7 @@ void add(char *tokens[]) {
 }
 
 void show(char *tokens[]) {
-  // check if the tokens contains a =
+  // check if the tokens contains "="
   int flag = 0;
   int len = strlen(tokens[1]);
   for (int i = 0; len >= i; i++) {
@@ -194,8 +194,6 @@ void show(char *tokens[]) {
     printf("%s %s %s", decoded_site, decoded_username, clear_passwd);
   }
 
-  // free(decoded_username);
-  // free(decoded_password);
   free(b_key1);
   free(result);
 }

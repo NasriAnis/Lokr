@@ -8,10 +8,9 @@ typedef struct {
 } Entry;
 
 int F_exist(char* file_name);
-int F_write(char* file_name, char* input, int new_line);
-int new_line(char *file_name, int num);
-// char** F_search(char* file_name,char* input, int search_type, int fetch_line);
-Entry* search(char* file_name,char* input, int search_type);
 char** Cred_search(char* file_name);
+int new_line(char *file_name, int num);
+Entry* search(char* file_name,char* input, int search_type);
+int F_write(char* file_name, char* input, int new_line);
 
 #endif
