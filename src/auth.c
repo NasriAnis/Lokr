@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "auth.h"
-#include "crypto.h"
-#include "vault.h"
+#include "include/auth.h"
+#include "include/crypto.h"
+#include "include/vault.h"
 
 
 int authenticate(char *password_buffer, char* username_buffer) {

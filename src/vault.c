@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "vault.h"
+#include "include/vault.h"
 
 FILE *F_open(char* file_name, char* type){
   FILE *fptr;

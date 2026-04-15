@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "auth.h"
-#include "crypto.h"
-#include "misc.h"
-#include "vault.h"
+#include "../src/include/auth.h"
+#include "../src/include/crypto.h"
+#include "../src/include/misc.h"
+#include "../src/include/vault.h"
 
 typedef struct {
   char username[70];
@@ -174,7 +174,7 @@ void show(char *tokens[]) {
   }
 
  // logic change loop throught 3 words at a time
-  for (int i = 0; 1; i++){
+  for (i = 0; 1; i++){
 
     // check for sentinel
     if (result[i].site == NULL \
