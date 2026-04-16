@@ -137,7 +137,9 @@ void show(char *tokens[]) {
   // check if the tokens contains "="
   int flag = 0;
   int len = strlen(tokens[1]);
-  for (int i = 0; len >= i; i++) {
+
+  int i;
+  for (i = 0; len >= i; i++) {
     if (tokens[1][i] == '=') {
       flag = 1;
     }
@@ -172,21 +174,22 @@ void show(char *tokens[]) {
     printf("Error: Not found\n");
     return;
   }
-
+ 
  // logic change loop throught 3 words at a time
-  for (i = 0; 1; i++){
+  int j;
+  for (j = 0; 1; j++){
 
     // check for sentinel
-    if (result[i].site == NULL \
-      && result[i].username == NULL \
-      && result[i].password == NULL){
+    if (result[j].site == NULL \
+      && result[j].username == NULL \
+      && result[j].password == NULL){
       break;
     }
 
-    char *decoded_site = decode_base64(result[i].site);
-    char *decoded_username = decode_base64(result[i].username);
+    char *decoded_site = decode_base64(result[j].site);
+    char *decoded_username = decode_base64(result[j].username);
     unsigned char *decoded_password =
-        decode_base64_bin(result[i].password, &decoded_len);
+        decode_base64_bin(result[j].password, &decoded_len);
 
     unsigned char *clear_passwd = crypto_decrypt(
         (const unsigned char *)user.passwd, (unsigned char *)decoded_password);
