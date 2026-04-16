@@ -1,10 +1,12 @@
 #include <gtk/gtk.h>
 
 #include "../include/login_window.h"
+#include "../src/include/auth.h"
 
 typedef struct {
-    GtkWidget *user_entry;
-    GtkWidget *pass_entry;
+  GtkWidget *user_entry;
+  GtkWidget *pass_entry;
+  GtkWidget *error_label;
 } LoginData;
 
 static void test_credentials(GtkButton *button, gpointer user_data){
@@ -12,7 +14,18 @@ static void test_credentials(GtkButton *button, gpointer user_data){
   const char *username = gtk_editable_get_text(GTK_EDITABLE(login->user_entry));
   const char *password = gtk_editable_get_text(GTK_EDITABLE(login->pass_entry));
 
-  g_print("Attempting login: %s / %s\n", username, password);
+  if (authenticate((char *)password, (char *)username) == 0){
+ 
+    // kill the window and return to the main function
+    GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(button));
+    GtkApplication *app = gtk_window_get_application(GTK_WINDOW(root));
+    g_application_quit(G_APPLICATION(app));
+
+    g_free(login);
+  }
+  else {
+    gtk_label_set_text(GTK_LABEL(login->error_label), "Invalid credentials. Try again!");
+  }
 }
 
 /* Function where we construct the GTK window
@@ -20,8 +33,9 @@ static void test_credentials(GtkButton *button, gpointer user_data){
 static void login_panel(GtkApplication *app, gpointer data)
 {
   // initializinf `GtkWindow` pointer
-  GtkWidget *window;
   GtkWidget *box;
+  GtkWidget *label;
+  GtkWidget *window;
   GtkWidget *button;
   GtkWidget *entry_username;
   GtkWidget *entry_password;
@@ -41,10 +55,18 @@ static void login_panel(GtkApplication *app, gpointer data)
   gtk_window_set_child(GTK_WINDOW(window), box);
 
   /* Create user entry */
+  label = gtk_label_new("username");
+  gtk_widget_set_halign(label, GTK_ALIGN_START);
+  gtk_box_append(GTK_BOX(box), label);
+
   entry_username = gtk_entry_new();
   gtk_box_append(GTK_BOX(box), entry_username);
 
-  /* Create user entry */
+  /* Create password entry */
+  label = gtk_label_new("password");
+  gtk_widget_set_halign(label, GTK_ALIGN_START);
+  gtk_box_append(GTK_BOX(box), label);
+
   entry_password = gtk_entry_new();
   gtk_box_append(GTK_BOX(box), entry_password);
 
@@ -56,6 +78,18 @@ static void login_panel(GtkApplication *app, gpointer data)
   button = gtk_button_new_with_label("Login");
   g_signal_connect(button, "clicked", G_CALLBACK(test_credentials), loginptr);
   gtk_box_append(GTK_BOX (box), button);
+
+  /* Create error label */
+  GtkWidget *error_label = gtk_label_new("");
+  gtk_widget_set_name(error_label, "error-text"); 
+  GtkCssProvider *provider = gtk_css_provider_new();
+  gtk_css_provider_load_from_string(provider, "#error-text { color: red; }");
+  gtk_style_context_add_provider_for_display(gdk_display_get_default(),
+                                             GTK_STYLE_PROVIDER(provider),
+                                             GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+  gtk_box_append(GTK_BOX(box), error_label);
+  loginptr->error_label = error_label; // Save to struct
 
   /* Show the gtk window via this function */
   gtk_window_present (GTK_WINDOW (window));

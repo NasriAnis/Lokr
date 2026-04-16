@@ -1,5 +1,8 @@
 #include <gtk/gtk.h>
 
+#include "../include/signup_window.h"
+#include "../src/include/auth.h"
+
 typedef struct {
     GtkWidget *user_entry;
     GtkWidget *pass_entry;
@@ -10,7 +13,14 @@ static void test_credentials(GtkButton *button, gpointer user_data){
   const char *username = gtk_editable_get_text(GTK_EDITABLE(login->user_entry));
   const char *password = gtk_editable_get_text(GTK_EDITABLE(login->pass_entry));
 
-  g_print("Attempting login: %s / %s\n", username, password);
+  create_user((char *)username, (char *)password);
+
+  // kill the window and return to the main function
+  GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(button));
+  GtkApplication *app = gtk_window_get_application(GTK_WINDOW(root));
+  g_application_quit(G_APPLICATION(app));
+
+  g_free(login);
 }
 
 /* Function where we construct the GTK window
@@ -18,8 +28,9 @@ static void test_credentials(GtkButton *button, gpointer user_data){
 static void signup_panel(GtkApplication *app, gpointer data)
 {
   // initializinf `GtkWindow` pointer
-  GtkWidget *window;
   GtkWidget *box;
+  GtkWidget *label;
+  GtkWidget *window;
   GtkWidget *button;
   GtkWidget *entry_username;
   GtkWidget *entry_password;
@@ -39,10 +50,18 @@ static void signup_panel(GtkApplication *app, gpointer data)
   gtk_window_set_child(GTK_WINDOW(window), box);
 
   /* Create user entry */
+  label = gtk_label_new("username");
+  gtk_widget_set_halign(label, GTK_ALIGN_START);
+  gtk_box_append(GTK_BOX(box), label);
+
   entry_username = gtk_entry_new();
   gtk_box_append(GTK_BOX(box), entry_username);
 
-  /* Create user entry */
+  /* Create password entry */
+  label = gtk_label_new("password");
+  gtk_widget_set_halign(label, GTK_ALIGN_START);
+  gtk_box_append(GTK_BOX(box), label);
+
   entry_password = gtk_entry_new();
   gtk_box_append(GTK_BOX(box), entry_password);
 
@@ -51,7 +70,7 @@ static void signup_panel(GtkApplication *app, gpointer data)
   loginptr->pass_entry = entry_password;
 
   /* Create a button */
-  button = gtk_button_new_with_label("Signup");
+  button = gtk_button_new_with_label("Login");
   g_signal_connect(button, "clicked", G_CALLBACK(test_credentials), loginptr);
   gtk_box_append(GTK_BOX (box), button);
 

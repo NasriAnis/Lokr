@@ -8,9 +8,9 @@
 int main()
 {
   if (F_exist("user.bin") != 0) {
-    show_login_panel(0, NULL);
-  } else {
     show_signup_panel(0, NULL);
+  } else {
+    show_login_panel(0, NULL);
   }
   return 0;
 }
