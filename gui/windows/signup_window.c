@@ -3,24 +3,49 @@
 #include "../include/signup_window.h"
 #include "../src/include/auth.h"
 
+static void test_credentials(GtkButton *button, gpointer user_data);
+static void signup_panel(GtkApplication *app, gpointer data);
+
 typedef struct {
-    GtkWidget *user_entry;
-    GtkWidget *pass_entry;
+  GtkWidget *user_entry;
+  GtkWidget *pass_entry;
+  int flag;
 } LoginData;
 
-static void test_credentials(GtkButton *button, gpointer user_data){
-  LoginData *login = (LoginData *)user_data;
-  const char *username = gtk_editable_get_text(GTK_EDITABLE(login->user_entry));
-  const char *password = gtk_editable_get_text(GTK_EDITABLE(login->pass_entry));
+int show_signup_panel(int argc, char** argv)
+{
+  LoginData *loginptr = g_malloc(sizeof(LoginData));
+  loginptr->flag = 1;
+
+  /* GtkApplication declaration to app pointer
+    * then initialized in `gtk_application_new` */
+  GtkApplication *app;
+  app = gtk_application_new("com.lockr.app", G_APPLICATION_DEFAULT_FLAGS);
+
+  g_signal_connect(app, "activate", G_CALLBACK (signup_panel), loginptr);
+
+  /* when quiting the app this function returns and then the process 
+    * is freed from memory using the `g_object_unref` function */
+  g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  int temp = loginptr->flag;
+  g_free(loginptr);
+  return temp;
+}
+
+static void test_credentials(GtkButton *button, gpointer data){
+  LoginData *loginptr = (LoginData *)data;
+  const char *username = gtk_editable_get_text(GTK_EDITABLE(loginptr->user_entry));
+  const char *password = gtk_editable_get_text(GTK_EDITABLE(loginptr->pass_entry));
 
   create_user((char *)username, (char *)password);
+  loginptr->flag = 0;
 
   // kill the window and return to the main function
   GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(button));
   GtkApplication *app = gtk_window_get_application(GTK_WINDOW(root));
   g_application_quit(G_APPLICATION(app));
-
-  g_free(login);
 }
 
 /* Function where we construct the GTK window
@@ -35,7 +60,7 @@ static void signup_panel(GtkApplication *app, gpointer data)
   GtkWidget *entry_username;
   GtkWidget *entry_password;
 
-  LoginData *loginptr = g_malloc(sizeof(LoginData));
+  LoginData *loginptr = (LoginData *)data;
 
   /* create a new window and set arguments
    * tutle, size etc */
@@ -76,21 +101,4 @@ static void signup_panel(GtkApplication *app, gpointer data)
 
   /* Show the gtk window via this function */
   gtk_window_present (GTK_WINDOW (window));
-}
-
-int show_signup_panel(int argc, char** argv)
-{
-  /* GtkApplication declaration to app pointer
-    * then initialized in `gtk_application_new` */
-  GtkApplication *app;
-  app = gtk_application_new("com.lockr.app", G_APPLICATION_DEFAULT_FLAGS);
-
-  g_signal_connect(app, "activate", G_CALLBACK (signup_panel), NULL);
-
-  /* when quiting the app this function returns and then the process 
-    * is freed from memory using the `g_object_unref` function */
-  int status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
-
-  return status;
 }

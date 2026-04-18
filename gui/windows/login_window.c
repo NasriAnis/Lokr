@@ -3,28 +3,57 @@
 #include "../include/login_window.h"
 #include "../src/include/auth.h"
 
+static void login_panel(GtkApplication *app, gpointer data);
+static void test_credentials(GtkButton *button, gpointer user_data);
+
 typedef struct {
   GtkWidget *user_entry;
   GtkWidget *pass_entry;
   GtkWidget *error_label;
+  int flag;
 } LoginData;
 
-static void test_credentials(GtkButton *button, gpointer user_data){
-  LoginData *login = (LoginData *)user_data;
-  const char *username = gtk_editable_get_text(GTK_EDITABLE(login->user_entry));
-  const char *password = gtk_editable_get_text(GTK_EDITABLE(login->pass_entry));
+int show_login_panel(int argc, char** argv)
+{
+  LoginData *loginptr = g_malloc(sizeof(LoginData));
+  loginptr->flag = 1;
+
+  /* GtkApplication declaration to app pointer
+    * then initialized in `gtk_application_new` */
+  GtkApplication *app;
+  app = gtk_application_new("com.lockr.app", G_APPLICATION_DEFAULT_FLAGS);
+
+  g_signal_connect(app, "activate", G_CALLBACK (login_panel), loginptr);
+
+  /* when quiting the app this function returns and then the process 
+    * is freed from memory using the `g_object_unref` function */
+  g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  int temp = loginptr->flag;
+  g_free(loginptr);
+  return temp;
+}
+
+static void test_credentials(GtkButton *button, gpointer data)
+{
+  LoginData *loginptr = (LoginData *)data;
+
+  const char *username = gtk_editable_get_text(GTK_EDITABLE(loginptr->user_entry));
+  const char *password = gtk_editable_get_text(GTK_EDITABLE(loginptr->pass_entry));
 
   if (authenticate((char *)password, (char *)username) == 0){
+    loginptr->flag = 0;
  
     // kill the window and return to the main function
     GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(button));
     GtkApplication *app = gtk_window_get_application(GTK_WINDOW(root));
     g_application_quit(G_APPLICATION(app));
-
-    g_free(login);
   }
   else {
-    gtk_label_set_text(GTK_LABEL(login->error_label), "Invalid credentials. Try again!");
+    loginptr->flag = 1;
+
+    gtk_label_set_text(GTK_LABEL(loginptr->error_label), "Invalid credentials. Try again!");
   }
 }
 
@@ -39,8 +68,6 @@ static void login_panel(GtkApplication *app, gpointer data)
   GtkWidget *button;
   GtkWidget *entry_username;
   GtkWidget *entry_password;
-
-  LoginData *loginptr = g_malloc(sizeof(LoginData));
 
   /* create a new window and set arguments
    * tutle, size etc */
@@ -70,6 +97,7 @@ static void login_panel(GtkApplication *app, gpointer data)
   entry_password = gtk_entry_new();
   gtk_box_append(GTK_BOX(box), entry_password);
 
+  LoginData *loginptr = (LoginData *)data;
   // credentials retrieved from login pannel
   loginptr->user_entry = entry_username;
   loginptr->pass_entry = entry_password;
@@ -93,21 +121,4 @@ static void login_panel(GtkApplication *app, gpointer data)
 
   /* Show the gtk window via this function */
   gtk_window_present (GTK_WINDOW (window));
-}
-
-int show_login_panel(int argc, char** argv)
-{
-  /* GtkApplication declaration to app pointer
-    * then initialized in `gtk_application_new` */
-  GtkApplication *app;
-  app = gtk_application_new("com.lockr.app", G_APPLICATION_DEFAULT_FLAGS);
-
-  g_signal_connect(app, "activate", G_CALLBACK (login_panel), NULL);
-
-  /* when quiting the app this function returns and then the process 
-    * is freed from memory using the `g_object_unref` function */
-  int status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
-
-  return status;
 }
