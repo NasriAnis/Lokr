@@ -116,3 +116,41 @@ Entry* search(char* file_name,char* input, int search_type){
 
   return results;
 }
+
+Entry* dump_all(char* file_name){
+  FILE *fptr;
+  fptr = F_open(file_name, "r");
+
+  int i = 0;
+  Entry *results = NULL;
+
+  char word1[256];
+  char word2[256];
+  char word3[256];
+  char line[4024];
+
+  while (fgets(line, sizeof(line), fptr) != NULL) {
+    if (sscanf(line, "%255s %255s %255s", word1, word2, word3) != 3){
+      continue;
+    }
+    Entry *tmp = realloc(results, (i + 1) * sizeof(Entry));
+
+    if (!tmp){free(results); return NULL;}
+    results = tmp;
+
+    results[i].site = strdup(word1);
+    results[i].username = strdup(word2);
+    results[i].password = strdup(word3);
+
+    i = i + 1;
+  }
+
+  Entry *tmp = realloc(results, (i + 1) * sizeof(Entry));
+  if (!tmp) { free(results); return NULL; }
+  results = tmp;
+
+  // sentinel end delimitter
+  results[i] = (Entry){NULL, NULL, NULL};
+
+  return results;
+}
