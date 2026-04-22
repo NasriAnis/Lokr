@@ -8,53 +8,51 @@
 #include "../src/include/vault.h"
 
 typedef struct {
-  char username[70];
-  char passwd[70];
+  char username[1080];
+  char passwd[1080];
 } user_t;
 user_t user;
 
-char password_buffer[1060];
-char username_buffer[1060];
-char user_input[1020];
 
-void user_creation();
-void authentication();
+void user_creation(char* username_buffer, char* password_buffer, size_t user_size, size_t pass_size);
+void authentication(char* username_buffer, char* password_buffer, size_t user_size, size_t pass_size);
 void add(char *tokens[]);
 void show(char *tokens[]);
 
 int main(int argc, char *argv[]) {
 
-  char *tokens[64];
-
   // if no argument are specififed
   if (argc < 2) {
+    char password_buffer[1080];
+    char username_buffer[1080];
+    char user_input[1080];
+    char *tokens[64];
+ 
     // check credentials
-
     if (F_exist("user.bin") != 0) {
-      user_creation();
+      user_creation(username_buffer, password_buffer, sizeof(username_buffer), sizeof(password_buffer));
     } else {
-      authentication();
+      authentication(username_buffer, password_buffer, sizeof(username_buffer), sizeof(password_buffer));
     }
 
     // save credential to a struct
     str_cpy(user.username, username_buffer);
-    str_cpy(user.passwd,
-            password_buffer); // the password will be used as an encryption key
+    str_cpy(user.passwd, password_buffer); // the password will be used as an encryption key
 
     while (1) {
       printf("> ");
-      fgets(user_input, sizeof(user_input), stdin);
+      f_gets(user_input, sizeof(user_input));
       int count = tokenize(user_input, tokens);
 
       if (strcmp(tokens[0], "add") == 0) {
         if (count != 4) {
-          printf("Command layout : add [site] [username] [pasword]");
+          printf("Command layout : add [site] [username] [pasword]\n");
         } else {
           add(tokens);
         }
       } else if (strcmp(tokens[0], "show") == 0) {
         if (count != 2) {
-          printf("Command layout : add site=[site] or add user=[username]");
+          printf("Command layout : add site=[site] or add user=[username]\n");
         } else {
           show(tokens);
         }
@@ -69,30 +67,62 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void user_creation() {
+void user_creation(char* username_buffer, char* password_buffer, size_t user_size, size_t pass_size) {
   // Takes user credential
   printf("please create a user.\n");
 
-  printf("Username : ");
-  f_gets(username_buffer);
-  trim(username_buffer);
+  while (1){
+    printf("Username : ");
+    int flag1 = f_gets(username_buffer, user_size);
 
-  printf("Password : ");
-  f_gets(password_buffer);
-  trim(password_buffer);
+    if (flag1 == 0){
+      printf("Input too long, repeat...\n");
+    } else{
+      trim(username_buffer);
+      break;
+    }
+  }
+
+  while (1){
+    printf("Password : ");
+    int flag2 = f_gets(password_buffer, pass_size);
+
+    if (flag2 == 0){
+      printf("Input too long, repeat...\n");
+    } else{
+      trim(password_buffer);
+      break;
+    }
+  }
 
   create_user(username_buffer, password_buffer);
 }
-void authentication() {
+void authentication(char* username_buffer, char* password_buffer, size_t user_size, size_t pass_size) {
   do {
 
-    printf("Enter your username : ");
-    f_gets(username_buffer);
-    trim(username_buffer);
+    while (1){
+      printf("Enter your username : ");
+      int flag1 = f_gets(username_buffer, user_size);
 
-    printf("Enter your password : ");
-    f_gets(password_buffer);
-    trim(password_buffer);
+      if (flag1 == 0){
+        printf("Input too long, repeat...\n");
+      } else{
+        trim(username_buffer);
+        break;
+      }
+    }
+
+    while (1){
+      printf("Enter your password : ");
+      int flag2 = f_gets(password_buffer, pass_size);
+
+      if (flag2 == 0){
+        printf("Input too long, repeat...\n");
+      } else{
+        trim(password_buffer);
+        break;
+      }
+    }
 
   } while (authenticate(password_buffer, username_buffer) != 0);
 }
@@ -101,6 +131,7 @@ void add(char *tokens[]) {
   char *site = tokens[1];
   char *login = tokens[2];
   char *pass = tokens[3];
+  char user_input[1080];
 
   printf("Do you wanna add this account to the database ?\n");
   printf("Site : %s\n", site);
@@ -108,7 +139,8 @@ void add(char *tokens[]) {
   printf("Password : %s\n", pass);
 
   printf("(Y/n) : ");
-  fgets(user_input, sizeof(user_input), stdin);
+  f_gets(user_input, sizeof(user_input));
+  printf("\n");
 
   if (strcmp(user_input, "n") != 0) {
     size_t blob_len = 0;

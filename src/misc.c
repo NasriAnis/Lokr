@@ -3,11 +3,24 @@
 #include <ctype.h>
 #include <string.h>
 
-void f_gets(char* input){
+int f_gets(char* input, size_t size){
   // This function adds a null terminator
   // at the new line of a string
-  fgets(input, sizeof(input), stdin);
-  input[strcspn(input, "\n")] = '\0';
+  if(fgets(input, size, stdin) == NULL) {
+    return -1;  // Error
+  }
+ 
+  // If newline exists, input fits
+  if(strchr(input, '\n')) {
+    input[strcspn(input, "\n")] = '\0';
+    return 1;  // Success
+  } else {
+    // Flush remaining input
+    int c;
+    while((c = getchar()) != '\n' && c != EOF);
+    input[0] = '\0';
+    return 0;  // Input too long
+  }
 }
 
 void str_cpy(char* input, char* buffer){
