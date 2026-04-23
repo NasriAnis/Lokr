@@ -47,10 +47,9 @@ static void test_credentials(GtkButton *button, gpointer data) {
   if (authenticate((char *)password, (char *)username) == 0) {
     loginptr->flag = 0;
 
+    // save credentials to a global struct 
     str_cpy(global_credentials.username, (char *)username, sizeof(global_credentials.username));
     str_cpy(global_credentials.password, (char *)password, sizeof(global_credentials.password));
-    // global_credentials->username = username; // strdup
-    // global_credentials->password = password;
 
     // kill the window and return to the main function
     GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(button));

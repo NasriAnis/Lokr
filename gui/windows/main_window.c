@@ -1,8 +1,10 @@
 #include <gtk/gtk.h>
+#include <stdio.h>
 
 #include "../../src/include/vault.h"
 #include "../../src/include/crypto.h"
 #include "../include/cred.h"
+#include "glib-object.h"
 
 static void main_window(GtkApplication *app, gpointer data);
 static void view_vault(GtkButton *button, gpointer *window_ptr);
@@ -66,7 +68,6 @@ static void main_window(GtkApplication *app, gpointer data)
   // save pointers used in other functions
   window_ptr->window = main_window;
   window_ptr->content_area = content_area;
-  // window_ptr->scrolled_window = scrolled_window;
 
   gtk_window_present (GTK_WINDOW (main_window));
 }
@@ -101,8 +102,10 @@ static void view_vault(GtkButton *button, gpointer *data)
     unsigned char *decoded_password =
         decode_base64_bin(result[j].password, &decoded_len);
 
+    // retrieve key from global struct
+    char *key = global_credentials.password;
     unsigned char *clear_passwd = crypto_decrypt(
-        (const unsigned char *)global_credentials.password, (unsigned char *)decoded_password);
+        (const unsigned char *)key, (unsigned char *)decoded_password);
 
     GtkWidget *content_area = window_ptr->content_area;
     gtk_box_append(GTK_BOX(content_area), create_credential_row(decoded_site,  decoded_username,  (char *)clear_passwd));

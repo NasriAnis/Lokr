@@ -3,7 +3,7 @@ CFLAGS  := -Wall -Wextra -Iinclude -Ideps
 DIRS    := src gui cli gui/windows
 SRCS    := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.c))
 OBJS    := $(SRCS:.c=.o)
-TARGET  := myprog
+TARGET  := lokr
 LIBS    := -lsodium -largon2
 
 # GTK4
