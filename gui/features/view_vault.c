@@ -8,17 +8,17 @@
 #include "../include/main_window.h"
 #include "../include/view_vault.h"
 
-void view_vault_window(GtkButton *button, gpointer *window_ptr);
 GtkWidget* create_credential_row(const char *site, const char *username, const char *password);
 
-void view_vault_window(GtkButton *button, gpointer *data)
-{
-  Window *window_ptr = (Window *)data;
-  GtkWidget *content_area = window_ptr->content_area;
-  gtk_stack_set_visible_child_name(GTK_STACK(window_ptr->stack), "vault");
-
+void view_vault_window(GtkButton *button, gpointer *data){
   size_t decoded_len = 0;
   Entry *result = NULL;
+  GtkWidget *child;
+
+  Window *window_ptr = (Window *)data;
+  GtkWidget *content_area = window_ptr->content_area;
+
+  gtk_stack_set_visible_child_name(GTK_STACK(window_ptr->stack), "vault");
 
   result = dump_all("user.bin");
 
@@ -27,7 +27,6 @@ void view_vault_window(GtkButton *button, gpointer *data)
     return;
   }
 
-  GtkWidget *child;
   while ((child = gtk_widget_get_first_child(content_area)) != NULL) {
     gtk_box_remove(GTK_BOX(content_area), child);
   }
@@ -45,13 +44,11 @@ void view_vault_window(GtkButton *button, gpointer *data)
 
     char *decoded_site = decode_base64(result[j].site);
     char *decoded_username = decode_base64(result[j].username);
-    unsigned char *decoded_password =
-        decode_base64_bin(result[j].password, &decoded_len);
+    unsigned char *decoded_password = decode_base64_bin(result[j].password, &decoded_len);
 
     // retrieve key from global struct
     char *key = global_credentials.password;
-    unsigned char *clear_passwd = crypto_decrypt(
-        (const unsigned char *)key, (unsigned char *)decoded_password);
+    unsigned char *clear_passwd = crypto_decrypt( (const unsigned char *)key, (unsigned char *)decoded_password);
 
     gtk_box_append(GTK_BOX(content_area), create_credential_row(decoded_site,  decoded_username,  (char *)clear_passwd));
 
@@ -64,7 +61,7 @@ void view_vault_window(GtkButton *button, gpointer *data)
 }
 
 // Helper to create a single row with 3 entry fields
-GtkWidget* create_credential_row(const char *site, const char *username, const char *password) {
+GtkWidget* create_credential_row(const char *site, const char *username, const char *password){
     // Outer row container
     GtkWidget *row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_widget_set_margin_start(row, 8);

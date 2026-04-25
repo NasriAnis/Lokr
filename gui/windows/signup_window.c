@@ -56,6 +56,7 @@ static void test_credentials(GtkButton *button, gpointer data) {
   // kill the window and return to the main function
   GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(button));
   GtkApplication *app = gtk_window_get_application(GTK_WINDOW(root));
+  gtk_window_destroy(GTK_WINDOW(root));
   g_application_quit(G_APPLICATION(app));
 }
 

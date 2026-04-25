@@ -7,8 +7,7 @@
 
 #include "../src/include/vault.h"
 
-int main()
-{
+int main(){
   int flag;
   cred_init();
   if (F_exist("user.bin") != 0) {

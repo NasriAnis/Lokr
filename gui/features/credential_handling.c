@@ -12,7 +12,7 @@ typedef struct{
   GtkWidget *entry_site;
 } entry_ptr;
 
-static void save_password();
+static void save_password(GtkButton *button2, gpointer *data);
 
 void add_password_window(GtkButton *button2, gpointer *data){
   GtkWidget *box;
