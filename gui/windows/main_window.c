@@ -25,7 +25,7 @@ int show_main_window(int argc, char** argv){
 // main window GUI builder function
 static void main_window(GtkApplication *app, gpointer data){
   GtkWidget *paned, *sidebar, *btn_show_all,
-  *scrolled_window, *content_area, *main_window, 
+  *scrolled_window, *content_area, *main_window,
   *btn_add_pass;
 
   Window *window_ptr = g_malloc(sizeof(Window));
