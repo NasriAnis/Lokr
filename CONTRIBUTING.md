@@ -1,6 +1,6 @@
-# Contributing to vaultrc
+# Contributing to Lokr
 
-Thank you for your interest in contributing to **vaultrc** — a minimal, security-focused password manager written in C.
+Thank you for your interest in contributing to **Lokr** — a minimal, security-focused password manager written in C.
 
 Please read this document carefully before opening any issue or pull request.
 
@@ -34,7 +34,7 @@ Be respectful. Contributions are reviewed by humans. Keep discussions technical,
    - `make`
 3. Create a dedicated branch for your change — never work directly on main:
 ```sh
-git checkout -b fix/vault-open-null-deref
+git checkout -b fix/Lokr-open-null-deref
 # or
 git checkout -b feat/entry-search-by-label
 
@@ -148,7 +148,7 @@ Open an issue tagged `enhancement` and describe:
 - The proposed behavior
 - Any security implications you are aware of
 
-Features that weaken the cryptographic design of vaultrc (e.g., weaker KDF parameters, optional encryption) will not be accepted.
+Features that weaken the cryptographic design of Lokr (e.g., weaker KDF parameters, optional encryption) will not be accepted.
 
 ---
 
