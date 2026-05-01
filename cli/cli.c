@@ -46,6 +46,14 @@ int main() {
       }
     }
 
+    else if (strcmp(tokens[0], "gen") == 0) {
+      if (count != 3) {
+        printf("Command layout : gen [site] [username]\n");
+      } else {
+        gen(tokens);
+      }
+    }
+
     else if (strcmp(tokens[0], "show") == 0) {
       if (count != 2) {
         printf("Command layout : show site=[site] or add user=[username]\n");
