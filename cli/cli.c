@@ -97,4 +97,3 @@ int main() {
   cred_cleanup();
   return 0;
 }
-

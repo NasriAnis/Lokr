@@ -232,4 +232,3 @@ void dump(char *filename){
 
   free(result);
 }
-
