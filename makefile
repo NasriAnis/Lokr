@@ -37,4 +37,4 @@ gui:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET) $(TARGET)_gui
+	rm -f $(OBJS) $(TARGET) $(TARGET)_gui user.bin
