@@ -1,3 +1,5 @@
+.PHONY: all gui clean
+
 CC      := gcc
 CFLAGS  := -Wall -Wextra -Iinclude -Ideps
 DIRS := src src/auth src/crypto src/init src/misc src/vault gui cli gui/windows
