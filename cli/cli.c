@@ -32,8 +32,9 @@ int main() {
   str_cpy(global_credentials.username, username_buffer, sizeof(global_credentials.username));
   str_cpy(global_credentials.password, password_buffer, sizeof(global_credentials.username));
 
+  printf("enter 'help' on guidance to use this CLI application\n");
   while (1) {
-    printf(">To see the existing credentials, enter in this format\n'show site=[sitename]'\n>");
+    printf("> ");
     f_gets(user_input, sizeof(user_input));
 
     if (strcmp(user_input, "")==0){
